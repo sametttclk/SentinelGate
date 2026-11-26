@@ -41,7 +41,7 @@ EXPOSE 8080
 USER sentinel:sentinel
 
 # Memory & GC tuned environment variables (Render / Koyeb free tier safe)
-ENV JAVA_OPTS="-Xmx350m -Xms128m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError"
+ENV JAVA_OPTS="-XX:+UseContainerSupport -Xmx350m -Xms128m -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError"
 
 # Container healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
