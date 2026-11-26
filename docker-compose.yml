@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  sentinelgate-db:
+    image: postgres:15-alpine
+    container_name: sentinelgate-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sentinelgate_db
+      POSTGRES_USER: sentinel_user
+      POSTGRES_PASSWORD: sentinel_secure_pass123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinel_user -d sentinelgate_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sentinelgate-net
+
+  sentinelgate-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentinelgate-backend
+    restart: unless-stopped
+    depends_on:
+      sentinelgate-db:
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://sentinelgate-db:5432/sentinelgate_db
+      SPRING_DATASOURCE_USERNAME: sentinel_user
+      SPRING_DATASOURCE_PASSWORD: sentinel_secure_pass123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      JWT_SECRET_KEY: SentinelGateCriticalInfrastructureMonitoringSecureKey2026!
+      JWT_EXPIRATION_MS: 86400000
+      JAVA_OPTS: "-Xmx350m -Xms128m -XX:+UseG1GC"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - sentinelgate-net
+
+networks:
+  sentinelgate-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local

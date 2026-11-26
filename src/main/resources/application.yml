@@ -1,0 +1,63 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: SentinelGate-Backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/sentinelgate_db}
+    username: ${SPRING_DATASOURCE_USERNAME:sentinel_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:sentinel_secure_pass123}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 3
+      idle-timeout: 30000
+      pool-name: SentinelGateHikariPool
+      max-lifetime: 1800000
+      connection-timeout: 20000
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# JWT Konfigürasyonu (Stateless Authentication)
+sentinelgate:
+  security:
+    jwt:
+      # En az 256-bit (32 karakter) güvenli secret key
+      secret-key: ${JWT_SECRET_KEY:SentinelGateCriticalInfrastructureMonitoringSecureKey2026!}
+      # Token geçerlilik süresi (milisaniye cinsinden - varsayılan 24 saat: 86400000 ms)
+      expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+# Springdoc OpenAPI (Swagger UI)
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    display-request-duration: true
+
+# Actuator & Healthcheck
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+logging:
+  level:
+    root: INFO
+    com.sentinelgate: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework.security: ${LOG_LEVEL_SECURITY:INFO}
