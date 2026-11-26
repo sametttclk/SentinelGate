@@ -206,6 +206,16 @@ classDiagram
 
 ---
 
+## 📸 Canlı Demo & Swagger UI Ekran Görüntüleri
+
+| **Swagger UI & API Uçları** | **JWT Kimlik Doğrulama (UC-01)** |
+|:---:|:---:|
+| ![Swagger UI & API Uçları](docs/screenshots/01-swagger-overview.png) | ![JWT Kimlik Doğrulama (UC-01)](docs/screenshots/02-jwt-login.png) |
+| **Telemetri & SHA-256 Bütünlüğü (UC-02/03)** | **Denetim İzleri & RBAC (UC-04)** |
+| ![Telemetri & SHA-256 Bütünlüğü (UC-02/03)](docs/screenshots/03-telemetry-sha256.png) | ![Denetim İzleri & RBAC (UC-04)](docs/screenshots/04-audit-logs-rbac.png) |
+
+---
+
 ## 🔒 Demo Kullanıcı Hesapları (Otomatik Seed Data)
 
 Uygulama ilk ayağa kalktığında `DataInitializer` tarafından idempotent (yoksa oluşturan) demo kullanıcılar tanımlanır:
